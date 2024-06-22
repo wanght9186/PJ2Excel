@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using Newtonsoft.Json;
-//using RestSharp;
-//using RestSharp.Authenticators;
 using System.Windows.Forms;
 using System.Net;
 using System.Dynamic;
@@ -14,6 +12,7 @@ using Office = Microsoft.Office.Core;
 using System.Net.NetworkInformation;
 using System.IO;
 using System.Linq;
+using System.Diagnostics;
 //using static PjAddIn.JiraResponse_GetIssue_IssueLinks;
 //using Microsoft.Office.Interop.MSProject;
 
@@ -56,16 +55,35 @@ namespace Pj2Excel
             }
         }
 
-        /// <summary>
-        /// 获取所有选中的Ms Project中的Tasks
-        /// </summary>
-        /// <returns></returns>
+
+        //获取所有选中的Ms Project中的Tasks
         public static Mspj.Tasks GetActiveTasks()
         {
             Mspj.Project thisPj = Globals.ThisAddIn.Application.ActiveProject;
             Mspj.Tasks activeTasks = thisPj.Application.ActiveSelection.Tasks;
             return activeTasks;
         }
-       
+
+        // 判断一个日期是否为周末
+        public static bool IsWeekend(DateTime date)
+        {
+            // 判断日期的 DayOfWeek 属性是否为 Saturday 或 Sunday
+            return date.DayOfWeek == DayOfWeek.Saturday || date.DayOfWeek == DayOfWeek.Sunday;
+        }
+
+        //打开文件夹
+        public static void OpenFolder(string folderPath)
+        {
+            try
+            {
+                // 使用 Process.Start 启动文件资源管理器
+                Process.Start("explorer.exe", folderPath);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"无法打开文件夹: {ex.Message}");
+            }
+        }
+
     }
 }

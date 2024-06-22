@@ -5,19 +5,17 @@ using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
 using Microsoft.Office.Tools;
-using Mspj = Microsoft.Office.Interop.MSProject;
 using Office = Microsoft.Office.Core;
 using System.Net.NetworkInformation;
 using Microsoft.Office.Core;
-//using Microsoft.Office.Interop.MSProject;
-using Msxl = Microsoft.Office.Interop.Excel;
 using System.Collections;
+using System.Diagnostics;
 using Newtonsoft.Json;
 using System.IO;
-//using Microsoft.Office.Interop.Excel;
-using System.Diagnostics;
 using System.Windows.Forms;
 using System.Drawing;
+using Mspj = Microsoft.Office.Interop.MSProject;
+using Msxl = Microsoft.Office.Interop.Excel;
 
 namespace Pj2Excel
 {
@@ -186,7 +184,7 @@ namespace Pj2Excel
                             for (DateTime currentDate = startDate; currentDate.Date <= endDate.Date; currentDate = currentDate.AddDays(1))
                             {
                                 columnNum = GetColumnNumber(worksheet, currentDate, minDate);
-                                if (!IsWeekend(currentDate.Date))
+                                if (!Utils.IsWeekend(currentDate.Date))
                                 {
                                     worksheet.Cells[currentRow, columnNum].Value += "\n" + task.taskName;
                                 }
@@ -214,36 +212,18 @@ namespace Pj2Excel
             workbook.SaveAs(excelFilePath);
             excelApp.Quit();
             MessageBox.Show("生成Daily完毕");
-            OpenFolder(Utils.GetPath());
+            Utils.OpenFolder(Utils.GetPath());
 
             Console.WriteLine($"Excel 文件已成功生成：{excelFilePath}");
 
         }
-        // 判断一个日期是否为周末
-        public static bool IsWeekend(DateTime date)
-        {
-            // 判断日期的 DayOfWeek 属性是否为 Saturday 或 Sunday
-            return date.DayOfWeek == DayOfWeek.Saturday || date.DayOfWeek == DayOfWeek.Sunday;
-        }
+
         // 获取日期对应的列号
         public static int GetColumnNumber(Msxl.Worksheet worksheet, DateTime date, DateTime minDate)
         {
             int startColumn = 2; // 日期从第二列开始
             int column = (int)(date.Date - minDate.Date).TotalDays + startColumn;
             return column;
-        }
-        //打开文件夹
-        static void OpenFolder(string folderPath)
-        {
-            try
-            {
-                // 使用 Process.Start 启动文件资源管理器
-                Process.Start("explorer.exe", folderPath);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"无法打开文件夹: {ex.Message}");
-            }
         }
     }
 
