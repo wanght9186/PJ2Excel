@@ -3,6 +3,8 @@ E:\Projects\PJ2Excel\Pj2Excel\bin\Debug\Pj2Excel.pdb
 E:\Projects\PJ2Excel\Pj2Excel\bin\Debug\Pj2Excel.dll.manifest
 E:\Projects\PJ2Excel\Pj2Excel\bin\Debug\Pj2Excel.vsto
 E:\Projects\PJ2Excel\Pj2Excel\bin\Debug\Microsoft.Office.Tools.Common.v4.0.Utilities.dll
+E:\Projects\PJ2Excel\Pj2Excel\bin\Debug\Newtonsoft.Json.dll
+E:\Projects\PJ2Excel\Pj2Excel\bin\Debug\Newtonsoft.Json.xml
 E:\Projects\PJ2Excel\Pj2Excel\obj\Debug\Pj2Excel.csproj.AssemblyReference.cache
 E:\Projects\PJ2Excel\Pj2Excel\obj\Debug\Pj2Excel.Properties.Resources.resources
 E:\Projects\PJ2Excel\Pj2Excel\obj\Debug\Pj2Excel.Ribbon1.resources
@@ -11,5 +13,3 @@ E:\Projects\PJ2Excel\Pj2Excel\obj\Debug\Pj2Excel.csproj.CoreCompileInputs.cache
 E:\Projects\PJ2Excel\Pj2Excel\obj\Debug\Pj2Excel.csproj.CopyComplete
 E:\Projects\PJ2Excel\Pj2Excel\obj\Debug\Pj2Excel.dll
 E:\Projects\PJ2Excel\Pj2Excel\obj\Debug\Pj2Excel.pdb
-E:\Projects\PJ2Excel\Pj2Excel\bin\Debug\Newtonsoft.Json.dll
-E:\Projects\PJ2Excel\Pj2Excel\bin\Debug\Newtonsoft.Json.xml

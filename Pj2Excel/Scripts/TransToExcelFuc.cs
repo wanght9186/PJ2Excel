@@ -16,6 +16,7 @@ using System.Windows.Forms;
 using System.Drawing;
 using Mspj = Microsoft.Office.Interop.MSProject;
 using Msxl = Microsoft.Office.Interop.Excel;
+using System.Data.SqlTypes;
 
 namespace Pj2Excel
 {
@@ -34,82 +35,58 @@ namespace Pj2Excel
             {
                 currentMember = tsk.ResourceNames.ToString();
 
-                if (lastMember == "")
+                if (string.IsNullOrEmpty(currentMember))
                 {
-                    lastMember = tsk.ResourceNames.ToString();
+                    continue;
                 }
 
-                if (currentMember != lastMember)
+                // 查找当前成员的任务信息，如果没有则创建新的
+                MemberTaskInfo mTaskInfo = mTaskInfoList.FirstOrDefault(m => m.memberName == currentMember);
+                if (mTaskInfo == null)
                 {
-                    MemberTaskInfo mTaskInfo = new MemberTaskInfo();
+                    mTaskInfo = new MemberTaskInfo
+                    {
+                        memberName = currentMember
+                    };
                     mTaskInfoList.Add(mTaskInfo);
-                    mTaskInfo.memberName = currentMember;
+                }
 
-                    //一个task
-                    Task mTask = new Task();
-                    mTaskInfo.taskList.Add(mTask);
-                    mTask.taskName = "【" + tsk.Text3 + "】 " + tsk.Name;
-
-                    //判断是否有任务为O天，没有分段的情况
-                    if (tsk.SplitParts.Count != 0)
-                    {
-                        //把每段时间添加到task中
-                        foreach (Mspj.SplitPart part in tsk.SplitParts)
-                        {
-                            var start = part.Start;
-                            var finish = part.Finish;
-                            mTask.taskDurationList.Add(new TaskDuration(start, finish));
-                        }
-                    }
-                    else
-                    {
-                        var start = tsk.Start;
-                        var finish = tsk.Finish;
-                        mTask.taskDurationList.Add(new TaskDuration(start, finish));
-                    }
-
-                    lastMember = currentMember;
+                // 创建一个新的任务并添加到成员的任务列表中
+                Task mTask;
+                if (tsk.Text3 != null)
+                {
+                    mTask = new Task("【" + tsk.Text3 + "】 " + tsk.Name);
                 }
                 else
                 {
-                    Task mTask = new Task();
-                    mTask.taskName = "【"+tsk.Text3 + "】 " + tsk.Name;
-                    //判断是否有任务为O天，没有分段的情况
-                    if (tsk.SplitParts.Count != 0)
+                    mTask = new Task(tsk.Name);
+                }
+
+                // 判断是否有任务为 0 天，没有分段的情况
+                if (tsk.SplitParts.Count != 0)
+                {
+                    // 把每段时间添加到任务中
+                    foreach (Mspj.SplitPart part in tsk.SplitParts)
                     {
-                        foreach (Mspj.SplitPart part in tsk.SplitParts)
-                        {
-                            var start = part.Start;
-                            var finish = part.Finish;
-                            mTask.taskDurationList.Add(new TaskDuration(start, finish));
-                        }
-                    }
-                    else
-                    {
-                        var start = tsk.Start;
-                        var finish = tsk.Finish;
+                        var start = part.Start;
+                        var finish = part.Finish;
                         mTask.taskDurationList.Add(new TaskDuration(start, finish));
                     }
-
-                    if (mTaskInfoList.Count == 0)
-                    {
-                        //第一次
-                        MemberTaskInfo mTaskInfo = new MemberTaskInfo();
-                        mTaskInfo.memberName = currentMember;
-                        mTaskInfoList.Add(mTaskInfo);
-                        mTaskInfo.taskList.Add(mTask);
-                    }
-                    else
-                    {
-                        mTaskInfoList[mTaskInfoList.Count - 1].taskList.Add(mTask);
-                    }
                 }
+                else
+                {
+                    var start = tsk.Start;
+                    var finish = tsk.Finish;
+                    mTask.taskDurationList.Add(new TaskDuration(start, finish));
+                }
+
+                mTaskInfo.taskList.Add(mTask);
             }
 
             string json = JsonConvert.SerializeObject(mTaskInfoList, Formatting.Indented);
 
             // 将 JSON 写入当前文件夹下的文件
-            //File.WriteAllText("E:\\MemberExcelTask.json", json);
+            // File.WriteAllText("E:\\MemberExcelTask.json", json);
 
             TransToExcel(mTaskInfoList);
 
@@ -124,6 +101,7 @@ namespace Pj2Excel
             Msxl.Application excelApp = new Msxl.Application();
             Msxl.Workbook workbook = excelApp.Workbooks.Add();
             Msxl.Worksheet worksheet = workbook.Sheets[1];
+
             // 设置行列宽度
             //Msxl.Range column = worksheet.Columns[1];
             //Msxl.Range row = worksheet.Rows[1];
@@ -240,6 +218,11 @@ namespace Pj2Excel
         public Task()
         {
             this.taskName = "";
+            taskDurationList = new List<TaskDuration>();
+        }
+        public Task(string taskName)
+        {
+            this.taskName = taskName;
             taskDurationList = new List<TaskDuration>();
         }
     }

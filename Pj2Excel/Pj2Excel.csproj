@@ -183,7 +183,7 @@
     can be found.
   -->
   <ItemGroup>
-    <Compile Include="Scripts\PushPullIssuesFunc.cs" />
+    <Compile Include="Scripts\Utils.cs" />
     <Compile Include="Scripts\TransToExcelFuc.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
